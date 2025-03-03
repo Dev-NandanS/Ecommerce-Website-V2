@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send } from 'lucide-react';
+import { MessageSquare, X, Send, ShoppingCart } from 'lucide-react';
+import { Product } from '../types';
 
 interface SearchResult {
   title: string;
@@ -17,9 +18,10 @@ interface Message {
 
 interface SmartSearchChatbotProps {
   darkMode: boolean;
+  addToCart: (product: Product) => void;
 }
 
-export function SmartSearchChatbot({ darkMode }: SmartSearchChatbotProps) {
+export function SmartSearchChatbot({ darkMode, addToCart }: SmartSearchChatbotProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { text: 'Hi there! How can I help you find products today?', isUser: false }
@@ -42,6 +44,29 @@ export function SmartSearchChatbot({ darkMode }: SmartSearchChatbotProps) {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
+  };
+
+  // Function to handle adding a product to cart from search results
+  const handleAddToCart = (product: SearchResult) => {
+    // Transform the search result to match the Product interface
+    const cartProduct: Product = {
+      id: Date.now(), // Use timestamp as a temporary ID
+      name: product.title,
+      price: typeof product.price === 'string' 
+        ? parseFloat(product.price.replace(/[^0-9.]/g, '')) 
+        : product.price,
+      description: product.type,
+      image: 'https://source.unsplash.com/random/300x200/?product', // Placeholder image
+    };
+    
+    // Add product to cart
+    addToCart(cartProduct);
+    
+    // Provide feedback in chat
+    setMessages(prevMessages => [
+      ...prevMessages,
+      { text: `Added "${product.title}" to your cart!`, isUser: false }
+    ]);
   };
 
   const sendMessage = async () => {
@@ -153,6 +178,16 @@ export function SmartSearchChatbot({ darkMode }: SmartSearchChatbotProps) {
                             Rating: {result.rating}
                           </p>
                         )}
+                        <button
+                          onClick={() => handleAddToCart(result)}
+                          className={`mt-2 flex items-center gap-1 px-3 py-1 rounded text-sm 
+                            ${darkMode 
+                              ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                              : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+                        >
+                          <ShoppingCart size={14} />
+                          <span>Add to Cart</span>
+                        </button>
                       </div>
                     ))}
                     {message.results.length > 3 && (
