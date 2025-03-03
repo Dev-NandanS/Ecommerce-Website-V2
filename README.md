@@ -2,7 +2,7 @@
 
 A modern, responsive e-commerce platform built with React, TypeScript, and Tailwind CSS, featuring an intelligent search system and a seamless shopping experience.
 
-![TechStore Screenshot](https://images.unsplash.com/photo-1557426272-fc759fdf7a8d?w=1920&q=80)
+![TechStore Screenshot]([https://images.unsplash.com/photo-1557426272-fc759fdf7a8d?w=1920&q=80](https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3owYjRxc3N0MnN2cjFweWhxbmxpa2xidXJpenBrYjBjbG43bXdzNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/18Q8oedoOqdbH1P2Nh/giphy.gif))
 
 ## Features
 
