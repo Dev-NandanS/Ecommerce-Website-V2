@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Search, Moon, Sun } from 'lucide-react';
 import { products } from './data/products';
 import { CartModal } from './components/CartModal';
+import { SmartSearchChatbot } from './components/SmartSearchChatbot'; // Import the new component
 import { CartItem, Product } from './types';
 import { enhancedSearch } from './utils/search';
 
@@ -173,6 +174,9 @@ function App() {
         onUpdateQuantity={updateQuantity}
         onRemoveFromCart={removeFromCart}
       />
+
+      {/* Add the SmartSearchChatbot component */}
+      <SmartSearchChatbot darkMode={darkMode} />
     </div>
   );
 }

@@ -1154,5 +1154,215 @@ export const products = [
         price: 1399.0,
         description: "No description available.",
         image: "https://m.media-amazon.com/images/I/61p1jv0X-qS._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5dd3",
+        name: "Akshita gems 8.25 Ratti Pearl Gemstone Certified M",
+        price: 349.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/515rU1gxGyL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5dd4",
+        name: "MJ Ragav Ready to Race Duke Printed Silicon Bracel",
+        price: 199.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/41TpbE4nyeL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5dd5",
+        name: "SoilMade Golden Bahubali Kada, Round Shape, Brass ",
+        price: 229.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/71xthB402vL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5dd6",
+        name: "Jewels Kafe Trendy Designer Gold Plated Men's Chai",
+        price: 399.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/416TEVB84DL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5dd7",
+        name: "MAYAPURI 2 Mukhi Rudraksha/Natural 2 Face Rudraksh",
+        price: 175.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/51cm4xnJK0L._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5dd8",
+        name: "Black Beads Catholic Praying Rosary for Men & Wome",
+        price: 199.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/71fq2IVxr0L._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5dd9",
+        name: "Lion Head Ring Best Gift for Rakhi for Brother for",
+        price: 231.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/41sZeQ-SBKL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5dda",
+        name: "Via Mazzini Glitter Stardust Stainless Steel Propo",
+        price: 520.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/61sjfElvdXL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5ddb",
+        name: "Sukkhi Glorious Gold Plated Kundan Rakhi Combo (Se",
+        price: 399.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/81wnIrNfcUL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5ddc",
+        name: "1 Mukhi Rudraksha Original Certified 28mm Red Thre",
+        price: 1499.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/61q4PFXUMQL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5ddd",
+        name: "Knighthood Helmet Lapel Pin Badge (Black)",
+        price: 399.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/61SGlwcGgeL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5dde",
+        name: "Kaameri Bazaar Raksha bandhan Bhaiya Rakhi and Bha",
+        price: 269.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/61J-bYoW72L._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5ddf",
+        name: "THE MEN THING 6mm Pure Stainless Steel Milan trend",
+        price: 699.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/81k97yQB-3L._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5de0",
+        name: "APNASANSAR Mahakal Silver Om Rudraksh Shiv Trishul",
+        price: 199.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/41r5v03qggL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5de1",
+        name: "DIYSM Natural Healing Crystals Bracelet",
+        price: 295.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/61+9xXAIJ2L._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5de2",
+        name: "Shining Jewel - By Shivansh Men's Funky and Stylis",
+        price: 546.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/31WpI-9mEKL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5de3",
+        name: "Moda Accessories Bracelets for Men and Boys - Set ",
+        price: 199.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/41oFx9JSrHL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5de4",
+        name: "Parampara New 1 Pieces Panchdhatu Kada Bracelet Ba",
+        price: 199.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/510gBGn22oL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5de5",
+        name: "GAZE JEWELS Pendant for men/women Antique Gold and",
+        price: 239.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/61+HHZw6zRL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5de6",
+        name: "Stone Place 15.25 Ratti 14.25 Carat Certified Natu",
+        price: 815.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/612Ez8O9zNL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5de7",
+        name: "Eerafashionicing Hangings Designer Buttons, Kurta ",
+        price: 289.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/91eJzS-d7lL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5de8",
+        name: "Stylish Fashion Titanium Silver Pattern Ring for M",
+        price: 229.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/41KC3ZkzhIS._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5de9",
+        name: "LMDPRAJAPATIS 14.60 Carat Natural Certified Ruby/M",
+        price: 249.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/51v2bOANvrL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5dea",
+        name: "Takshila Gems® Natural Yellow Topaz Pendant (Sunel",
+        price: 750.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/513Jazqo4NL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5deb",
+        name: "Clara 7.25 to 7.5 Ratti Certified Energized Loose ",
+        price: 3699.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/51OqGwEXwzL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5dec",
+        name: "Hawa Alloy Metal Kachua Turtle Shape Astrological ",
+        price: 225.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/61rFf0D5yJL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5ded",
+        name: "BL Fedput 9.25 Ratti 8.50 Carat Super Multifire Op",
+        price: 499.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/616Xih5YGJS._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5dee",
+        name: "Prajapatis 6.25 Ratti / 5.62 Carat Beryl Emerald (",
+        price: 290.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/41iFIpP3OYL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5def",
+        name: "RDK Original Rudraksha Bracelet 8 mm with 20 Beads",
+        price: 245.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/317CG7I1GXL._AC_UL320_.jpg"
+      },
+      {
+        id: "675fc948af336094ab6d5df0",
+        name: "LMDPRAJAPATIS Certified Unheated Untreatet 7.25 Ra",
+        price: 552.0,
+        description: "No description available.",
+        image: "https://m.media-amazon.com/images/I/31LnAhgoVVL._AC_UL320_.jpg"
       }
   ];
