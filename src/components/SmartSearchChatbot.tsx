@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, ShoppingCart } from 'lucide-react';
+import { MessageSquare, X, Send, ShoppingCart, Search } from 'lucide-react';
 import { Product } from '../types';
 
 interface SearchResult {
@@ -137,108 +137,133 @@ export function SmartSearchChatbot({ darkMode, addToCart }: SmartSearchChatbotPr
         {isOpen ? <X size={24} /> : <MessageSquare size={24} />}
       </button>
 
-      {/* Chatbot dialog */}
+      {/* Chatbot dialog - Based on wireframe */}
       {isOpen && (
-        <div className={`absolute bottom-16 left-0 w-80 sm:w-96 rounded-lg shadow-xl overflow-hidden
+        <div className={`absolute bottom-16 left-0 w-[90vw] max-w-4xl rounded-lg shadow-xl overflow-hidden
           ${darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'}`}>
-          <div className={`p-4 font-medium ${darkMode ? 'bg-gray-700 text-white' : 'bg-blue-600 text-white'}`}>
-            Smart Product Search
+          
+          {/* Chat header with minimalistic design */}
+          <div className={`p-4 flex justify-between items-center ${darkMode ? 'bg-gray-700 text-white' : 'bg-blue-600 text-white'}`}>
+            <span className="font-bold text-lg">Smart Product Search</span>
+            <button 
+              onClick={toggleChat} 
+              className="text-white hover:text-gray-200"
+              aria-label="Close chat"
+            >
+              <X size={20} />
+            </button>
           </div>
           
-          <div className="h-96 overflow-y-auto p-4 flex flex-col gap-3">
-            {messages.map((message, index) => (
-              <div 
-                key={index} 
-                className={`${message.isUser 
-                  ? 'ml-auto bg-blue-600 text-white' 
-                  : darkMode 
-                    ? 'mr-auto bg-gray-700 text-white' 
-                    : 'mr-auto bg-gray-100 text-gray-800'} 
-                  p-3 rounded-lg max-w-[85%]`}
-              >
-                <p>{message.text}</p>
-                
-                {!message.isUser && message.results && message.results.length > 0 && (
-                  <div className="mt-3 space-y-2">
-                    {message.results.slice(0, 3).map((result, idx) => (
-                      <div 
-                        key={idx} 
-                        className={`p-2 rounded ${darkMode 
-                          ? 'bg-gray-800 hover:bg-gray-900 border border-gray-700' 
-                          : 'bg-white hover:bg-gray-50 border border-gray-200'}`}
-                      >
-                        <p className={`font-medium ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>
-                          {result.title}
-                        </p>
-                        <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                          ${typeof result.price === 'string' ? result.price : result.price.toFixed(2)}
-                        </p>
-                        {result.rating && (
-                          <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                            Rating: {result.rating}
-                          </p>
-                        )}
-                        <button
-                          onClick={() => handleAddToCart(result)}
-                          className={`mt-2 flex items-center gap-1 px-3 py-1 rounded text-sm 
-                            ${darkMode 
-                              ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                              : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
-                        >
-                          <ShoppingCart size={14} />
-                          <span>Add to Cart</span>
-                        </button>
-                      </div>
-                    ))}
-                    {message.results.length > 3 && (
-                      <p className={`text-sm italic ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                        + {message.results.length - 3} more results
-                      </p>
-                    )}
+          {/* Messages area with improved layout */}
+          <div className="h-[50vh] overflow-y-auto p-4 flex flex-col gap-3">
+            <div className="flex flex-col gap-4">
+              {messages.map((message, index) => (
+                <div key={index} className="w-full">
+                  {/* User message or Bot message */}
+                  <div 
+                    className={`rounded-lg p-3 max-w-[75%] ${message.isUser 
+                      ? 'ml-auto bg-blue-600 text-white' 
+                      : darkMode 
+                        ? 'mr-auto bg-gray-700 text-white' 
+                        : 'mr-auto bg-gray-100 text-gray-800'}`}
+                  >
+                    <p>{message.text}</p>
                   </div>
-                )}
-              </div>
-            ))}
-            
-            {isLoading && (
-              <div className={`mr-auto p-3 rounded-lg ${
-                darkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-800'
-              }`}>
-                <div className="flex gap-1">
-                  <div className="w-2 h-2 rounded-full bg-current animate-bounce"></div>
-                  <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                  <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                  
+                  {/* Product grid based on wireframe */}
+                  {!message.isUser && message.results && message.results.length > 0 && (
+                    <div className="mt-4 w-full">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {message.results.map((result, idx) => (
+                          <div 
+                            key={idx} 
+                            className={`rounded-md overflow-hidden border ${darkMode 
+                              ? 'bg-gray-800 border-gray-700' 
+                              : 'bg-white border-gray-200'}`}
+                          >
+                            {/* Product image placeholder */}
+                            <div className="w-full h-40 bg-gray-200 flex items-center justify-center">
+                              <img 
+                                src="https://source.unsplash.com/random/300x200/?product" 
+                                alt={result.title}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            
+                            {/* Product details */}
+                            <div className="p-3">
+                              <h3 className={`font-semibold truncate ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                                {result.title}
+                              </h3>
+                              <p className={`text-sm truncate ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                                {result.type}
+                              </p>
+                              <div className="mt-2 flex justify-between items-center">
+                                <span className={`font-bold ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>
+                                  ${typeof result.price === 'string' ? result.price : result.price.toFixed(2)}
+                                </span>
+                                <button
+                                  onClick={() => handleAddToCart(result)}
+                                  className="text-xs bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700"
+                                >
+                                  add to cart
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {message.results.length > 8 && (
+                        <p className={`text-sm italic mt-3 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                          + {message.results.length - 8} more results
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
-              </div>
-            )}
-            
-            <div ref={messagesEndRef}></div>
+              ))}
+              
+              {/* Loading indicator */}
+              {isLoading && (
+                <div className={`self-start p-3 rounded-lg ${
+                  darkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-800'
+                }`}>
+                  <div className="flex gap-1">
+                    <div className="w-2 h-2 rounded-full bg-current animate-bounce"></div>
+                    <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                  </div>
+                </div>
+              )}
+              
+              <div ref={messagesEndRef}></div>
+            </div>
           </div>
           
-          <div className={`p-3 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-            <div className="flex items-center gap-2">
+          {/* Input area similar to wireframe */}
+          <div className={`p-4 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+            <div className="flex items-center gap-3 relative rounded-full border overflow-hidden pl-4 pr-1 py-1
+              ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'}">
               <input
                 type="text"
                 value={inputValue}
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}
                 placeholder="Ask about products..."
-                className={`flex-1 p-2 rounded ${
-                  darkMode 
-                    ? 'bg-gray-700 text-white border border-gray-600 focus:ring-blue-500' 
-                    : 'bg-white text-gray-800 border border-gray-300 focus:ring-blue-500'
-                } focus:outline-none focus:ring-2 focus:border-transparent`}
+                className={`flex-1 bg-transparent border-none outline-none ${
+                  darkMode ? 'text-white placeholder-gray-400' : 'text-gray-800 placeholder-gray-500'
+                }`}
               />
               <button 
                 onClick={sendMessage}
                 disabled={!inputValue.trim() || isLoading}
-                className={`p-2 rounded-full ${
+                className={`p-2 rounded-full transition-colors ${
                   darkMode
-                    ? 'bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-700'
+                    ? 'bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-600'
                     : 'bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-400'
                 } disabled:cursor-not-allowed`}
               >
-                <Send size={20} />
+                <Send size={18} />
               </button>
             </div>
           </div>
