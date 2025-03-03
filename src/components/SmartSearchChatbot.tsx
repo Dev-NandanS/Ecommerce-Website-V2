@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, ShoppingCart, Search } from 'lucide-react';
+import { MessageSquare, X, Send, ShoppingCart, User, Bot, ChevronDown, ChevronUp } from 'lucide-react';
 import { Product } from '../types';
+// Custom styles for chat bubbles now applied inline
 
 interface SearchResult {
   title: string;
@@ -14,6 +15,7 @@ interface Message {
   text: string;
   isUser: boolean;
   results?: SearchResult[];
+  showAllResults?: boolean;
 }
 
 interface SmartSearchChatbotProps {
@@ -69,6 +71,20 @@ export function SmartSearchChatbot({ darkMode, addToCart }: SmartSearchChatbotPr
     ]);
   };
 
+  // Function to toggle showing all results for a specific message
+  const toggleShowAllResults = (messageIndex: number) => {
+    setMessages(prevMessages => {
+      const updatedMessages = [...prevMessages];
+      if (updatedMessages[messageIndex]) {
+        updatedMessages[messageIndex] = {
+          ...updatedMessages[messageIndex],
+          showAllResults: !updatedMessages[messageIndex].showAllResults
+        };
+      }
+      return updatedMessages;
+    });
+  };
+
   const sendMessage = async () => {
     if (inputValue.trim() === '') return;
 
@@ -98,7 +114,12 @@ export function SmartSearchChatbot({ darkMode, addToCart }: SmartSearchChatbotPr
           
         setMessages(prevMessages => [
           ...prevMessages, 
-          { text: resultsText, isUser: false, results: data.results }
+          { 
+            text: resultsText, 
+            isUser: false, 
+            results: data.results,
+            showAllResults: false
+          }
         ]);
       } else {
         setMessages(prevMessages => [
@@ -137,7 +158,7 @@ export function SmartSearchChatbot({ darkMode, addToCart }: SmartSearchChatbotPr
         {isOpen ? <X size={24} /> : <MessageSquare size={24} />}
       </button>
 
-      {/* Chatbot dialog - Based on wireframe */}
+      {/* Chatbot dialog - Based on wireframe with WhatsApp style */}
       {isOpen && (
         <div className={`absolute bottom-16 left-0 w-[90vw] max-w-4xl rounded-lg shadow-xl overflow-hidden
           ${darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'}`}>
@@ -154,27 +175,59 @@ export function SmartSearchChatbot({ darkMode, addToCart }: SmartSearchChatbotPr
             </button>
           </div>
           
-          {/* Messages area with improved layout */}
+          {/* Messages area with WhatsApp style bubbles and icons */}
           <div className="h-[50vh] overflow-y-auto p-4 flex flex-col gap-3">
             <div className="flex flex-col gap-4">
               {messages.map((message, index) => (
                 <div key={index} className="w-full">
-                  {/* User message or Bot message */}
-                  <div 
-                    className={`rounded-lg p-3 max-w-[75%] ${message.isUser 
-                      ? 'ml-auto bg-blue-600 text-white' 
-                      : darkMode 
-                        ? 'mr-auto bg-gray-700 text-white' 
-                        : 'mr-auto bg-gray-100 text-gray-800'}`}
-                  >
-                    <p>{message.text}</p>
+                  {/* Message with icon - Fixed alignment to match wireframe */}
+                  <div className={`flex items-center gap-2 ${message.isUser ? 'justify-end' : 'justify-start'}`}>
+                    {/* Bot icon - only show for bot messages */}
+                    {!message.isUser && (
+                      <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                        <Bot size={18} className="text-blue-600" />
+                      </div>
+                    )}
+                    
+                    {/* Message bubble - fixed position */}
+                    <div 
+                      style={{
+                        maxWidth: '300px',
+                        padding: '0.75em',
+                        borderInline: '1.5em solid transparent',
+                        borderRadius: 'calc(1em + 1.5em)/1em',
+                        mask: `radial-gradient(100% 100% at ${message.isUser ? '100%' : '0'} 0, transparent 99%, black 102%) 
+                               ${message.isUser ? '100%' : '0'} 100%/1.5em 1.5em no-repeat,
+                               linear-gradient(black 0 0) padding-box`,
+                        background: message.isUser 
+                          ? '#2563eb' 
+                          : darkMode 
+                            ? '#374151' 
+                            : '#f3f4f6',
+                        color: message.isUser || darkMode ? 'white' : '#1f2937',
+                        borderBottomRightRadius: message.isUser ? '0' : undefined,
+                        borderBottomLeftRadius: !message.isUser ? '0' : undefined,
+                      }}
+                    >
+                      <p>{message.text}</p>
+                    </div>
+                    
+                    {/* User icon - only show for user messages */}
+                    {message.isUser && (
+                      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+                        <User size={18} className="text-gray-600" />
+                      </div>
+                    )}
                   </div>
                   
-                  {/* Product grid based on wireframe */}
+                  {/* Product grid - Limited to 4 by default */}
                   {!message.isUser && message.results && message.results.length > 0 && (
-                    <div className="mt-4 w-full">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {message.results.map((result, idx) => (
+                    <div className="mt-4 w-full pl-10"> {/* Added padding-left to align with the message */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                        {/* Show only 4 items or all items if showAllResults is true */}
+                        {(message.showAllResults 
+                          ? message.results 
+                          : message.results.slice(0, 4)).map((result, idx) => (
                           <div 
                             key={idx} 
                             className={`rounded-md overflow-hidden border ${darkMode 
@@ -213,10 +266,26 @@ export function SmartSearchChatbot({ darkMode, addToCart }: SmartSearchChatbotPr
                           </div>
                         ))}
                       </div>
-                      {message.results.length > 8 && (
-                        <p className={`text-sm italic mt-3 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                          + {message.results.length - 8} more results
-                        </p>
+                      
+                      {/* Show more / Show less button */}
+                      {message.results.length > 4 && (
+                        <button
+                          onClick={() => toggleShowAllResults(index)}
+                          className={`mt-3 flex items-center gap-1 text-sm font-medium 
+                            ${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'}`}
+                        >
+                          {message.showAllResults ? (
+                            <>
+                              <ChevronUp size={16} />
+                              <span>Show less</span>
+                            </>
+                          ) : (
+                            <>
+                              <ChevronDown size={16} />
+                              <span>Show {message.results.length - 4} more results</span>
+                            </>
+                          )}
+                        </button>
                       )}
                     </div>
                   )}
@@ -225,19 +294,37 @@ export function SmartSearchChatbot({ darkMode, addToCart }: SmartSearchChatbotPr
               
               {/* Loading indicator */}
               {isLoading && (
-                <div className={`self-start p-3 rounded-lg ${
-                  darkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-800'
-                }`}>
-                  <div className="flex gap-1">
-                    <div className="w-2 h-2 rounded-full bg-current animate-bounce"></div>
-                    <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                    <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                    <Bot size={18} className="text-blue-600" />
+                  </div>
+                  <div className={`p-3 rounded-lg ${
+                    darkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-800'
+                  }`}>
+                    <div className="flex gap-1">
+                      <div className="w-2 h-2 rounded-full bg-current animate-bounce"></div>
+                      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                    </div>
                   </div>
                 </div>
               )}
               
               <div ref={messagesEndRef}></div>
             </div>
+          </div>
+          
+          {/* DataScout Logo Watermark with "Built using" text */}
+          <div className="py-3 flex flex-col justify-center items-center">
+            <p className={`text-xs mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+              Built using
+            </p>
+            <img 
+              src="/images/datascout-logo.png" 
+              alt="DataScout" 
+              className="h-8 opacity-60"
+              style={{ maxWidth: '200px' }}
+            />
           </div>
           
           {/* Input area similar to wireframe */}
