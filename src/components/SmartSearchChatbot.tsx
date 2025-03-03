@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X, Send, ShoppingCart, User, Bot, ChevronDown, ChevronUp, Sliders } from 'lucide-react';
 import { Product, SearchRequest } from '../types';
+import './SmartSearchChatbot.css'; // Import component-specific CSS
 
 interface SearchResult {
   title: string;
@@ -15,6 +16,8 @@ interface Message {
   isUser: boolean;
   results?: SearchResult[];
   resultPage?: number; // Page number for pagination
+  showMorePrompt?: boolean; // Flag to indicate if this message is a "show more" prompt
+  relatedToMessageIndex?: number; // Reference to the original search message
 }
 
 interface SmartSearchChatbotProps {
@@ -99,22 +102,17 @@ const ProductCard = ({ result, darkMode, handleAddToCart }) => {
   );
 };
 
-// Show more results component with intuitive design
-const ShowMoreResults = ({ darkMode, onShowMore }) => (
+// Conversational suggestion chip component
+const SuggestionChip = ({ text, onClick, darkMode }) => (
   <button
-    onClick={onShowMore}
-    className={`mt-4 mx-auto block px-5 py-2.5 rounded-full transition-all hover:shadow-md ${
+    onClick={onClick}
+    className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-all shadow-sm mr-2 mb-2 ${
       darkMode 
-        ? 'bg-gray-700 text-blue-300 hover:bg-gray-600' 
-        : 'bg-gray-100 text-blue-600 hover:bg-gray-200'
+        ? 'bg-blue-600 text-white hover:bg-blue-700' 
+        : 'bg-blue-100 text-blue-800 hover:bg-blue-200'
     }`}
   >
-    <div className="flex flex-col items-center gap-1">
-      <span className="text-sm font-medium">Show more results</span>
-      <svg className="w-5 h-5 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 13l-7 7-7-7m14-8l-7 7-7-7" />
-      </svg>
-    </div>
+    {text}
   </button>
 );
 
@@ -173,18 +171,45 @@ export function SmartSearchChatbot({ darkMode, addToCart }: SmartSearchChatbotPr
     ]);
   };
 
-  // Function to handle showing more results
-  const handleShowMoreResults = (messageIndex: number) => {
-    setMessages(prevMessages => {
-      const updatedMessages = [...prevMessages];
-      if (updatedMessages[messageIndex]) {
-        updatedMessages[messageIndex] = {
-          ...updatedMessages[messageIndex],
-          resultPage: (updatedMessages[messageIndex].resultPage || 1) + 1
-        };
+  // Function to handle the "Show more related to this" prompt
+  const handleShowMorePrompt = (originalMessageIndex: number) => {
+    // Add a user-like message for "Show more related to this"
+    setMessages(prevMessages => [
+      ...prevMessages,
+      { 
+        text: "Show more related to this", 
+        isUser: true,
+        showMorePrompt: true,
+        relatedToMessageIndex: originalMessageIndex
       }
-      return updatedMessages;
-    });
+    ]);
+    
+    // Simulate bot response with more results
+    setIsLoading(true);
+    
+    setTimeout(() => {
+      setMessages(prevMessages => {
+        // Find the referenced message
+        const originalMessage = prevMessages[originalMessageIndex];
+        if (!originalMessage || !originalMessage.results) return prevMessages;
+        
+        // Get the current page
+        const currentPage = originalMessage.resultPage || 1;
+        
+        // Return new messages array with the additional results
+        return [
+          ...prevMessages,
+          { 
+            text: "Here are more results:", 
+            isUser: false,
+            results: originalMessage.results,
+            resultPage: currentPage + 1
+          }
+        ];
+      });
+      
+      setIsLoading(false);
+    }, 500);
   };
 
   const sendMessage = async () => {
@@ -291,9 +316,19 @@ export function SmartSearchChatbot({ darkMode, addToCart }: SmartSearchChatbotPr
         <div className={`absolute bottom-16 left-0 w-[90vw] max-w-4xl rounded-lg shadow-xl overflow-hidden
           ${darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'}`}>
           
-          {/* Chat header */}
+          {/* Chat header with DataScout branding moved here */}
           <div className={`p-4 flex justify-between items-center ${darkMode ? 'bg-gray-700 text-white' : 'bg-blue-600 text-white'}`}>
-            <span className="font-bold text-lg">Smart Product Search</span>
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-lg">Smart Product Search</span>
+              <div className="flex items-center text-xs opacity-60 ml-2 border-l pl-2">
+                <span>Built using</span>
+                <img 
+                  src="/images/datascout-logo.png" 
+                  alt="DataScout" 
+                  className="h-4 ml-1"
+                />
+              </div>
+            </div>
             <button 
               onClick={toggleChat} 
               className="text-white hover:text-gray-200"
@@ -338,7 +373,7 @@ export function SmartSearchChatbot({ darkMode, addToCart }: SmartSearchChatbotPr
                     )}
                   </div>
                   
-                  {/* Product grid - Using the new component */}
+                  {/* Product grid */}
                   {!message.isUser && message.results && message.results.length > 0 && (
                     <div className="mt-6 w-full pl-10">
                       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -355,51 +390,39 @@ export function SmartSearchChatbot({ darkMode, addToCart }: SmartSearchChatbotPr
                         ))}
                       </div>
                       
-                      {/* Show more results button - only if there are more results to show */}
-                      {message.results.length > (message.resultPage || 1) * 4 && (
-                        <ShowMoreResults 
-                          darkMode={darkMode}
-                          onShowMore={() => handleShowMoreResults(index)}
-                        />
+                      {/* Show more as a suggestion chip - only if there are more results to show */}
+                      {!message.showMorePrompt && message.results.length > (message.resultPage || 1) * 4 && (
+                        <div className="mt-4 flex flex-wrap">
+                          <SuggestionChip 
+                            text="Show more related to this" 
+                            onClick={() => handleShowMorePrompt(index)}
+                            darkMode={darkMode}
+                          />
+                        </div>
                       )}
                     </div>
                   )}
                 </div>
               ))}
               
-              {/* Loading indicator */}
+              {/* Animated gradient loading indicator */}
               {isLoading && (
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                     <Bot size={18} className="text-blue-600" />
                   </div>
-                  <div className={`p-3 rounded-lg ${
-                    darkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-800'
-                  }`}>
-                    <div className="flex gap-1">
-                      <div className="w-2 h-2 rounded-full bg-current animate-bounce"></div>
-                      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0.4s' }}></div>
-                    </div>
+                  <div 
+                    className={`p-4 rounded-2xl rounded-tl-none loading-bubble ${
+                      darkMode ? 'bg-gray-700 dark' : 'bg-gray-100 light'
+                    }`}
+                    style={{ width: '100px', height: '40px' }}
+                  >
                   </div>
                 </div>
               )}
               
               <div ref={messagesEndRef}></div>
             </div>
-          </div>
-          
-          {/* DataScout Logo Watermark */}
-          <div className="py-3 flex flex-col justify-center items-center">
-            <p className={`text-xs mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-              Built using
-            </p>
-            <img 
-              src="/images/datascout-logo.png" 
-              alt="DataScout" 
-              className="h-8 opacity-60"
-              style={{ maxWidth: '200px' }}
-            />
           </div>
           
           {/* Input area with integrated compact filters */}
