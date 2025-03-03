@@ -94,7 +94,7 @@ function App() {
       <div className="relative h-screen">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1557426272-fc759fdf7a8d?w=1920&q=80"
+            src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3kxandxM3l1cjdmeG9oZzZiMjNpeTlxemllc3ptcWJqd2VhMTV4YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26n79t82lmj989iAE/giphy.gif"
             alt="Hero Background"
             className="w-full h-full object-cover"
           />
