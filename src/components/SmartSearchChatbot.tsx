@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, ShoppingCart, User, Bot, ChevronDown, ChevronUp } from 'lucide-react';
-import { Product } from '../types';
-// Custom styles for chat bubbles now applied inline
+import { MessageSquare, X, Send, ShoppingCart, User, Bot, ChevronDown, ChevronUp, Sliders } from 'lucide-react';
+import { Product, SearchRequest } from '../types';
 
 interface SearchResult {
   title: string;
@@ -31,6 +30,15 @@ export function SmartSearchChatbot({ darkMode, addToCart }: SmartSearchChatbotPr
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  // Filter states
+  const [showFilters, setShowFilters] = useState(false);
+  const [priceMin, setPriceMin] = useState<number>(100);
+  const [priceMax, setPriceMax] = useState<number>(1000);
+  const [minRating, setMinRating] = useState<number>(4);
+  
+  // Remove the filter header section since we're moving filters to the prompt area
+  const [showFilterHeader, setShowFilterHeader] = useState(false); // Set to false to hide the original filter section
 
   useEffect(() => {
     scrollToBottom();
@@ -95,13 +103,29 @@ export function SmartSearchChatbot({ darkMode, addToCart }: SmartSearchChatbotPr
     setIsLoading(true);
 
     try {
+      // Create search request with filters
+      const searchRequest: SearchRequest = {
+        query: userMessage.text,
+        filters: {}
+      };
+
+      // Only add filters that have been set
+      if (showFilters) {
+        searchRequest.filters = {
+          price_min: priceMin,
+          price_max: priceMax,
+          min_rating: minRating,
+          sort_by: "price_asc" // Default sort
+        };
+      }
+
       // Call your API
       const response = await fetch('http://localhost:8000/api/v1/search', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ query: userMessage.text }),
+        body: JSON.stringify(searchRequest),
       });
 
       const data = await response.json();
@@ -144,6 +168,16 @@ export function SmartSearchChatbot({ darkMode, addToCart }: SmartSearchChatbotPr
     }
   };
 
+  // Format price to avoid double dollar signs
+  const formatPrice = (price: string | number): string => {
+    if (typeof price === 'string') {
+      // Remove any existing currency symbols
+      const numericPrice = price.replace(/[^0-9.]/g, '');
+      return numericPrice;
+    }
+    return price.toFixed(2);
+  };
+
   return (
     <div className="fixed bottom-6 left-6 z-50">
       {/* Chatbot toggle button */}
@@ -174,6 +208,8 @@ export function SmartSearchChatbot({ darkMode, addToCart }: SmartSearchChatbotPr
               <X size={20} />
             </button>
           </div>
+          
+          {/* Removed the original filter section - now integrated into the input area */}
           
           {/* Messages area with WhatsApp style bubbles and icons */}
           <div className="h-[50vh] overflow-y-auto p-4 flex flex-col gap-3">
@@ -251,9 +287,24 @@ export function SmartSearchChatbot({ darkMode, addToCart }: SmartSearchChatbotPr
                               <p className={`text-sm truncate ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                                 {result.type}
                               </p>
+                              
+                              {/* Star Rating Display */}
+                              <div className="flex items-center mt-1">
+                                {[...Array(5)].map((_, i) => (
+                                  <svg 
+                                    key={i}
+                                    className={`w-4 h-4 ${i < result.rating ? 'text-yellow-400' : 'text-gray-300'}`}
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                  </svg>
+                                ))}
+                              </div>
+                              
                               <div className="mt-2 flex justify-between items-center">
                                 <span className={`font-bold ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>
-                                  ${typeof result.price === 'string' ? result.price : result.price.toFixed(2)}
+                                  ${formatPrice(result.price)}
                                 </span>
                                 <button
                                   onClick={() => handleAddToCart(result)}
@@ -327,8 +378,64 @@ export function SmartSearchChatbot({ darkMode, addToCart }: SmartSearchChatbotPr
             />
           </div>
           
-          {/* Input area similar to wireframe */}
+          {/* Input area with integrated compact filters */}
           <div className={`p-4 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+            {/* Filter Controls - Compact inline version */}
+            <div className={`mb-3 px-2 flex flex-wrap items-center gap-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              <button 
+                onClick={() => setShowFilters(!showFilters)}
+                className={`flex items-center gap-1 px-2 py-1 rounded ${showFilters 
+                  ? darkMode ? 'bg-blue-500 text-white' : 'bg-blue-100 text-blue-800' 
+                  : darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}
+              >
+                <Sliders size={14} />
+                <span>Filters</span>
+              </button>
+              
+              {showFilters && (
+                <>
+                  <div className="flex items-center gap-1">
+                    <span>$</span>
+                    <input 
+                      type="number" 
+                      value={priceMin} 
+                      min={0} 
+                      max={priceMax}
+                      onChange={(e) => setPriceMin(Number(e.target.value))}
+                      className={`w-16 rounded-md px-2 py-1 text-xs ${darkMode ? 'bg-gray-800 text-white border-gray-600' : 'bg-white border-gray-300'}`}
+                      placeholder="Min"
+                    />
+                    <span>-</span>
+                    <span>$</span>
+                    <input 
+                      type="number" 
+                      value={priceMax} 
+                      min={priceMin}
+                      onChange={(e) => setPriceMax(Number(e.target.value))}
+                      className={`w-16 rounded-md px-2 py-1 text-xs ${darkMode ? 'bg-gray-800 text-white border-gray-600' : 'bg-white border-gray-300'}`}
+                      placeholder="Max"
+                    />
+                  </div>
+                  
+                  <div className="flex items-center gap-1">
+                    <span>Rating:</span>
+                    <select 
+                      value={minRating} 
+                      onChange={(e) => setMinRating(Number(e.target.value))}
+                      className={`rounded-md px-2 py-1 text-xs ${darkMode ? 'bg-gray-800 text-white border-gray-600' : 'bg-white border-gray-300'}`}
+                    >
+                      <option value={0}>Any</option>
+                      <option value={1}>1★+</option>
+                      <option value={2}>2★+</option>
+                      <option value={3}>3★+</option>
+                      <option value={4}>4★+</option>
+                      <option value={5}>5★</option>
+                    </select>
+                  </div>
+                </>
+              )}
+            </div>
+            
             <div className="flex items-center gap-3 relative rounded-full border overflow-hidden pl-4 pr-1 py-1
               ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'}">
               <input
